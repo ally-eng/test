@@ -1,29 +1,23 @@
 import { useCallback, useRef } from 'react';
 
-const EN_US_PRIORITY = [
-  'Google US English',   // Android Chrome
-  'Samantha',            // iOS
-  'Microsoft Aria',      // Windows
-  'Microsoft Guy',
-  'Alex',
-];
-
-// 음성 목록 비동기 로딩 (안드로이드 대응)
+// 음성 목록 비동기 로딩 (안드로이드/iOS 대응)
 function getVoices(): Promise<SpeechSynthesisVoice[]> {
   return new Promise((resolve) => {
     const voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      resolve(voices);
-      return;
-    }
-    // 안드로이드: voiceschanged 이벤트 대기
+    if (voices.length > 0) { resolve(voices); return; }
+
+    // Android: voiceschanged 이벤트 대기
     const handler = () => {
       resolve(window.speechSynthesis.getVoices());
       window.speechSynthesis.removeEventListener('voiceschanged', handler);
     };
     window.speechSynthesis.addEventListener('voiceschanged', handler);
-    // 1초 내 이벤트가 없으면 그냥 진행
-    setTimeout(() => resolve(window.speechSynthesis.getVoices()), 1000);
+    // iOS는 이벤트가 안 오는 경우가 있어서 0.5초 후 재시도
+    setTimeout(() => {
+      const v = window.speechSynthesis.getVoices();
+      if (v.length) { resolve(v); window.speechSynthesis.removeEventListener('voiceschanged', handler); }
+    }, 500);
+    setTimeout(() => resolve(window.speechSynthesis.getVoices()), 2000);
   });
 }
 
@@ -32,14 +26,23 @@ async function pickVoice(lang: 'en-US' | 'ko-KR'): Promise<SpeechSynthesisVoice 
   if (!voices.length) return null;
 
   if (lang === 'en-US') {
-    for (const name of EN_US_PRIORITY) {
-      const v = voices.find((v) => v.name.includes(name));
+    // 1순위: 로컬 en-US 음성 중 선호 이름 포함
+    const preferred = ['Google US English', 'Samantha', 'Microsoft Aria', 'Microsoft Guy', 'Alex'];
+    for (const name of preferred) {
+      const v = voices.find((v) => v.name.toLowerCase().includes(name.toLowerCase()));
       if (v) return v;
     }
-    return voices.find((v) => v.lang === 'en-US')
-      ?? voices.find((v) => v.lang.startsWith('en'))
-      ?? null;
+    // 2순위: lang이 en-US인 로컬 음성
+    const local = voices.find((v) => v.lang === 'en-US' && v.localService);
+    if (local) return local;
+    // 3순위: lang이 en-US인 모든 음성
+    const enUS = voices.find((v) => v.lang === 'en-US');
+    if (enUS) return enUS;
+    // 4순위: en으로 시작하는 음성
+    return voices.find((v) => v.lang.startsWith('en')) ?? null;
   } else {
+    const local = voices.find((v) => v.lang === 'ko-KR' && v.localService);
+    if (local) return local;
     return voices.find((v) => v.lang === 'ko-KR')
       ?? voices.find((v) => v.lang.startsWith('ko'))
       ?? null;
