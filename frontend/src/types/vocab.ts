@@ -34,7 +34,7 @@ export interface TestSession {
   setId: string;
   questions: TestQuestion[];
   answers: TestAnswer[];
-  direction: 'en-to-ko' | 'ko-to-en';
+  direction: 'en-to-ko' | 'ko-to-en' | 'mixed';
   startedAt: number;
   completedAt?: number;
 }
