@@ -59,6 +59,11 @@ export function Flashcard({ word, onNext, onPrev, onOpenDetail, current, total }
             className="absolute inset-0 bg-white rounded-2xl shadow-lg flex flex-col items-center justify-center p-8 border border-gray-100"
             style={{ backfaceVisibility: 'hidden' }}
           >
+            {word.partOfSpeech && (
+              <span className="mb-3 px-2.5 py-0.5 bg-indigo-100 text-indigo-600 text-xs font-semibold rounded-full">
+                {word.partOfSpeech}
+              </span>
+            )}
             <p className="text-4xl font-bold text-gray-800 text-center">{word.word}</p>
             <p className="mt-4 text-sm text-gray-400">클릭하거나 Space를 눌러 뒤집기</p>
           </div>
@@ -68,6 +73,11 @@ export function Flashcard({ word, onNext, onPrev, onOpenDetail, current, total }
             className="absolute inset-0 bg-indigo-50 rounded-2xl shadow-lg flex flex-col items-center justify-center p-8 border border-indigo-100"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
+            {word.partOfSpeech && (
+              <span className="mb-3 px-2.5 py-0.5 bg-indigo-200 text-indigo-700 text-xs font-semibold rounded-full">
+                {word.partOfSpeech}
+              </span>
+            )}
             <p className="text-3xl font-bold text-indigo-700 text-center">{word.meaning}</p>
           </div>
         </div>

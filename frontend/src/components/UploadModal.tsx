@@ -4,6 +4,7 @@ import { ocrImage, enrichBatch } from '../api/client';
 export interface EnrichedWord {
   word: string;
   meaning: string;
+  partOfSpeech?: string;
   etymology?: string;
   exampleSentence?: string;
   exampleTranslation?: string;
@@ -75,6 +76,7 @@ export function UploadModal({ onAdd, onClose }: UploadModalProps) {
         if (idx !== -1 && result.success) {
           enriched[idx] = {
             ...enriched[idx],
+            partOfSpeech: result.part_of_speech,
             etymology: result.etymology,
             exampleSentence: result.example_sentence,
             exampleTranslation: result.example_translation,

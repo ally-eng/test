@@ -44,7 +44,7 @@ export async function enrichWord(
 
 export async function enrichBatch(
   words: Array<{ word: string; meaning: string }>
-): Promise<Array<{ word: string; success: boolean; etymology?: string; example_sentence?: string; example_translation?: string }>> {
+): Promise<Array<{ word: string; success: boolean; part_of_speech?: string; etymology?: string; example_sentence?: string; example_translation?: string }>> {
   const res = await fetch(`${BASE_URL}/enrich/batch`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

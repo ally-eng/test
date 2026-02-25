@@ -22,7 +22,7 @@ interface VocabStore {
   addWords: (setId: string, words: Array<{ word: string; meaning: string }>) => void;
   updateWord: (setId: string, wordId: string, updates: Partial<VocabWord>) => void;
   deleteWord: (setId: string, wordId: string) => void;
-  enrichWord: (setId: string, wordId: string, data: { etymology: string; example_sentence: string; example_translation: string }) => void;
+  enrichWord: (setId: string, wordId: string, data: { part_of_speech?: string; etymology: string; example_sentence: string; example_translation: string }) => void;
 
   // Test actions
   saveTestSession: (session: TestSession) => void;
@@ -117,6 +117,7 @@ export const useVocabStore = create<VocabStore>()(
                     w.id === wordId
                       ? {
                           ...w,
+                          partOfSpeech: data.part_of_speech || w.partOfSpeech,
                           etymology: data.etymology,
                           exampleSentence: data.example_sentence,
                           exampleTranslation: data.example_translation,

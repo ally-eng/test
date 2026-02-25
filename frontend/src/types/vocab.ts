@@ -2,6 +2,7 @@ export interface VocabWord {
   id: string;
   word: string;
   meaning: string;
+  partOfSpeech?: string;
   etymology?: string;
   exampleSentence?: string;
   exampleTranslation?: string;
@@ -20,6 +21,7 @@ export interface TestQuestion {
   wordId: string;
   word: string;
   meaning: string;
+  partOfSpeech?: string;
   direction: 'en-to-ko' | 'ko-to-en';
 }
 

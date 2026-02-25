@@ -65,6 +65,7 @@ export function useTest({ words, direction, setId }: UseTestOptions) {
         wordId: w.id,
         word: w.word,
         meaning: w.meaning,
+        partOfSpeech: w.partOfSpeech,
         direction: qDir,
       };
     });

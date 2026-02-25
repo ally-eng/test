@@ -32,15 +32,16 @@ async def enrich_words_chunk(words: list[dict]) -> list[dict]:
     )
     message = await client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=200 * len(words),
+        max_tokens=250 * len(words),
         messages=[{
             "role": "user",
-            "content": f"""아래 영어 단어들의 어원과 예문을 JSON 배열로만 답하세요. 다른 말은 쓰지 마세요.
+            "content": f"""아래 영어 단어들의 품사, 어원, 예문을 JSON 배열로만 답하세요. 다른 말은 쓰지 마세요.
+품사는 영어 약자: n.(명사) v.(동사) adj.(형용사) adv.(부사) prep.(전치사) conj.(접속사)
 어원은 초등학생도 이해할 수 있게 쉽고 재미있게 2문장으로.
 
 {numbered}
 
-[{{"word":"단어","etymology":"어원","example_sentence":"예문","example_translation":"번역"}},...]"""
+[{{"word":"단어","part_of_speech":"n.","etymology":"어원","example_sentence":"예문","example_translation":"번역"}},...]"""
         }],
     )
     text = _clean_json(message.content[0].text)
@@ -60,6 +61,7 @@ async def enrich_batch(words: list[dict], chunk_size: int = 10) -> list[dict]:
                 matched = next((r for r in results if r.get("word", "").lower() == w["word"].lower()), None)
                 if matched:
                     out.append({"word": w["word"], "success": True,
+                                "part_of_speech": matched.get("part_of_speech", ""),
                                 "etymology": matched.get("etymology", ""),
                                 "example_sentence": matched.get("example_sentence", ""),
                                 "example_translation": matched.get("example_translation", "")})

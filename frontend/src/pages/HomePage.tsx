@@ -35,6 +35,7 @@ export function HomePage() {
         const matched = unenriched.find((w) => w.word === result.word);
         if (matched && result.success && result.etymology) {
           enrichWordStore(setId, matched.id, {
+            part_of_speech: result.part_of_speech,
             etymology: result.etymology,
             example_sentence: result.example_sentence ?? '',
             example_translation: result.example_translation ?? '',
@@ -65,6 +66,7 @@ export function HomePage() {
         const storeWord = updatedSet.words.find((w) => w.word === enriched.word && !w.enriched);
         if (storeWord) {
           enrichWordStore(currentSetId, storeWord.id, {
+            part_of_speech: enriched.partOfSpeech,
             etymology: enriched.etymology!,
             example_sentence: enriched.exampleSentence ?? '',
             example_translation: enriched.exampleTranslation ?? '',
