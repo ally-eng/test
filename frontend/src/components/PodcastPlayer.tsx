@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { VocabWord } from '../types/vocab';
+import { pickVoice } from '../hooks/useTTS';
 
 interface PodcastPlayerProps {
   words: VocabWord[];
@@ -19,33 +20,20 @@ export function PodcastPlayer({ words, setName }: PodcastPlayerProps) {
     };
   }, []);
 
-  const EN_US_VOICE_PRIORITY = ['Samantha', 'Google US English', 'Microsoft Aria', 'Microsoft Guy', 'Alex'];
-
-  function getBestVoice(lang: 'en-US' | 'ko-KR'): SpeechSynthesisVoice | null {
-    const voices = window.speechSynthesis.getVoices();
-    if (!voices.length) return null;
-    if (lang === 'en-US') {
-      for (const name of EN_US_VOICE_PRIORITY) {
-        const v = voices.find((v) => v.name.includes(name) && v.lang.startsWith('en'));
-        if (v) return v;
-      }
-      return voices.find((v) => v.lang === 'en-US') ?? voices.find((v) => v.lang.startsWith('en')) ?? null;
-    }
-    return voices.find((v) => v.lang === 'ko-KR') ?? voices.find((v) => v.lang.startsWith('ko')) ?? null;
-  }
-
-  const speakAsync = (text: string, lang: 'en-US' | 'ko-KR', rate: number): Promise<void> =>
-    new Promise((resolve) => {
+  const speakAsync = async (text: string, lang: 'en-US' | 'ko-KR', rate: number): Promise<void> => {
+    if (cancelRef.current) return;
+    const voice = await pickVoice(lang);
+    return new Promise((resolve) => {
       if (cancelRef.current) { resolve(); return; }
       const utt = new SpeechSynthesisUtterance(text);
       utt.lang = lang;
       utt.rate = rate;
-      const voice = getBestVoice(lang);
       if (voice) utt.voice = voice;
       utt.onend = () => resolve();
       utt.onerror = () => resolve();
       window.speechSynthesis.speak(utt);
     });
+  };
 
   const pause = (ms: number): Promise<void> =>
     new Promise((resolve) => setTimeout(resolve, ms));
