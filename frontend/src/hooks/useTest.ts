@@ -39,7 +39,7 @@ function checkAnswer(userAnswer: string, question: TestQuestion): boolean {
   );
 }
 
-const QUESTIONS_PER_TEST = 20;
+const QUESTIONS_PER_TEST = 10;
 
 interface UseTestOptions {
   words: VocabWord[];

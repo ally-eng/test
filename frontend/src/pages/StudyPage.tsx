@@ -11,7 +11,11 @@ export function StudyPage() {
   const { sets, currentSetId } = useVocabStore();
   const currentSet = sets.find((s) => s.id === currentSetId);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    const state = useVocabStore.getState();
+    const set = state.sets.find((s) => s.id === state.currentSetId);
+    return set && set.words.length > 20 ? 20 : 0;
+  });
   const [selectedWord, setSelectedWord] = useState<VocabWord | null>(null);
 
   if (!currentSet || currentSet.words.length === 0) {
