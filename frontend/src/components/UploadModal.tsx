@@ -31,6 +31,7 @@ export function UploadModal({ onAdd, onClose }: UploadModalProps) {
   const [enrichProgress, setEnrichProgress] = useState({ current: 0, total: 0 });
   const [tipIndex] = useState(() => Math.floor(Math.random() * LOADING_TIPS.length));
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -128,17 +129,32 @@ export function UploadModal({ onAdd, onClose }: UploadModalProps) {
         {step === 'upload' && (
           <div className="p-5 flex flex-col gap-4">
             <div
-              className="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
+              className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
               onClick={() => fileRef.current?.click()}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
             >
-              <p className="text-5xl mb-3">📸</p>
-              <p className="text-gray-600 font-medium">사진을 클릭하거나 드래그해서 업로드</p>
-              <p className="text-gray-400 text-sm mt-1">단어장, 교과서, 필기 노트 등</p>
+              <p className="text-5xl mb-3">🖼️</p>
+              <p className="text-gray-600 font-medium">사진첩에서 고르기</p>
+              <p className="text-gray-400 text-sm mt-1">저장된 사진, 스크린샷 등</p>
             </div>
+            <button
+              onClick={() => cameraRef.current?.click()}
+              className="border-2 border-dashed border-indigo-300 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50 transition-colors w-full"
+            >
+              <p className="text-5xl mb-3">📷</p>
+              <p className="text-gray-600 font-medium">카메라로 촬영하기</p>
+              <p className="text-gray-400 text-sm mt-1">단어장, 교과서, 필기 노트 등</p>
+            </button>
             <input
               ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+            />
+            <input
+              ref={cameraRef}
               type="file"
               accept="image/*"
               capture="environment"
