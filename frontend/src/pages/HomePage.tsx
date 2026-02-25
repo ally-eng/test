@@ -216,54 +216,58 @@ export function HomePage() {
         {currentSet ? (
           <>
             {/* Actions */}
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <h2 className="text-lg font-bold text-gray-800 flex-1">{currentSet.name}</h2>
-              <button
-                onClick={() => setShowUpload(true)}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-medium transition-colors"
-              >
-                📷 사진으로 추가
-              </button>
-              <button
-                onClick={() => setShowAddWord(true)}
-                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-medium transition-colors"
-              >
-                + 단어 추가
-              </button>
-              {currentSet.words.some((w) => !w.enriched) && !enrichProgress && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-bold text-gray-800">{currentSet.name}</h2>
                 <button
-                  onClick={() => runBatchEnrich(currentSet.id, currentSet.words)}
-                  className="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-xl text-sm font-medium transition-colors"
+                  onClick={() => {
+                    if (confirm(`"${currentSet.name}" 단어장을 삭제할까요?`)) {
+                      deleteSet(currentSet.id);
+                    }
+                  }}
+                  className="text-sm text-gray-400 hover:text-red-500"
                 >
-                  📚 어원 일괄 생성 ({currentSet.words.filter((w) => !w.enriched).length}개)
+                  삭제
                 </button>
-              )}
-              {currentSet.words.length >= 2 && (
-                <>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setShowUpload(true)}
+                  className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-medium transition-colors"
+                >
+                  📷 사진 추가
+                </button>
+                <button
+                  onClick={() => setShowAddWord(true)}
+                  className="px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-medium transition-colors"
+                >
+                  + 단어 추가
+                </button>
+                {currentSet.words.length >= 2 && (
+                  <>
+                    <button
+                      onClick={() => navigate('/study')}
+                      className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm font-medium transition-colors"
+                    >
+                      📖 학습
+                    </button>
+                    <button
+                      onClick={() => navigate('/test')}
+                      className="px-3 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-sm font-medium transition-colors"
+                    >
+                      ✏️ 시험
+                    </button>
+                  </>
+                )}
+                {currentSet.words.some((w) => !w.enriched) && !enrichProgress && (
                   <button
-                    onClick={() => navigate('/study')}
-                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm font-medium transition-colors"
+                    onClick={() => runBatchEnrich(currentSet.id, currentSet.words)}
+                    className="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-xl text-sm font-medium transition-colors"
                   >
-                    📖 학습
+                    📚 어원 생성
                   </button>
-                  <button
-                    onClick={() => navigate('/test')}
-                    className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-sm font-medium transition-colors"
-                  >
-                    ✏️ 시험
-                  </button>
-                </>
-              )}
-              <button
-                onClick={() => {
-                  if (confirm(`"${currentSet.name}" 단어장을 삭제할까요?`)) {
-                    deleteSet(currentSet.id);
-                  }
-                }}
-                className="px-3 py-2 text-gray-400 hover:text-red-500 text-sm"
-              >
-                삭제
-              </button>
+                )}
+              </div>
             </div>
 
             {/* 어원 생성 진행 상황 */}
@@ -316,29 +320,35 @@ export function HomePage() {
                         <button onClick={() => setEditingWordId(null)} className="text-gray-400 text-sm">취소</button>
                       </>
                     ) : (
-                      <>
-                        <span className="font-semibold text-gray-800 w-32 shrink-0">{w.word}</span>
-                        <span className="text-gray-500 flex-1">{w.meaning}</span>
-                        {w.enriched && <span className="text-xs text-amber-500">📚</span>}
-                        <button
-                          onClick={() => setSelectedWord(w)}
-                          className="text-xs text-gray-400 hover:text-amber-500 px-2 py-1 rounded"
-                        >
-                          어원
-                        </button>
-                        <button
-                          onClick={() => startEdit(w)}
-                          className="text-xs text-gray-400 hover:text-indigo-500 px-2 py-1 rounded"
-                        >
-                          편집
-                        </button>
-                        <button
-                          onClick={() => deleteWord(currentSet.id, w.id)}
-                          className="text-xs text-gray-400 hover:text-red-500 px-2 py-1 rounded"
-                        >
-                          삭제
-                        </button>
-                      </>
+                      <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-800 flex-1">{w.word}</span>
+                          {w.enriched && <span className="text-xs text-amber-500">📚</span>}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-500 text-sm flex-1">{w.meaning}</span>
+                          <div className="flex gap-1 shrink-0">
+                            <button
+                              onClick={() => setSelectedWord(w)}
+                              className="text-xs text-gray-400 hover:text-amber-500 px-2 py-1 rounded"
+                            >
+                              어원
+                            </button>
+                            <button
+                              onClick={() => startEdit(w)}
+                              className="text-xs text-gray-400 hover:text-indigo-500 px-2 py-1 rounded"
+                            >
+                              편집
+                            </button>
+                            <button
+                              onClick={() => deleteWord(currentSet.id, w.id)}
+                              className="text-xs text-gray-400 hover:text-red-500 px-2 py-1 rounded"
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </div>
                 ))}

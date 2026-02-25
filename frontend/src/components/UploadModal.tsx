@@ -218,28 +218,26 @@ export function UploadModal({ onAdd, onClose }: UploadModalProps) {
                 총 <span className="font-bold text-indigo-600">{words.length}개</span> 추출됨.
                 어원이 분석된 단어는 <span className="text-amber-500">📚</span> 표시돼요. 수정이 필요하면 편집하세요.
               </p>
-              <div className="grid grid-cols-[1fr_1fr_auto_auto] gap-2 mb-2">
-                <span className="text-xs font-medium text-gray-400 uppercase">영어</span>
-                <span className="text-xs font-medium text-gray-400 uppercase">뜻</span>
-                <span />
-                <span />
-              </div>
               {words.map((w, i) => (
-                <div key={i} className="grid grid-cols-[1fr_1fr_auto_auto] gap-2 mb-2 items-center">
-                  <input
-                    value={w.word}
-                    onChange={(e) => updateWord(i, 'word', e.target.value)}
-                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-indigo-400 focus:outline-none"
-                  />
-                  <input
-                    value={w.meaning}
-                    onChange={(e) => updateWord(i, 'meaning', e.target.value)}
-                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-indigo-400 focus:outline-none"
-                  />
-                  <span className="text-lg" title={w.etymology}>
-                    {w.etymology ? '📚' : ''}
-                  </span>
-                  <button onClick={() => removeWord(i)} className="p-1 text-gray-300 hover:text-red-500">✕</button>
+                <div key={i} className="flex items-center gap-2 mb-2">
+                  <div className="flex-1 flex flex-col gap-1">
+                    <input
+                      value={w.word}
+                      onChange={(e) => updateWord(i, 'word', e.target.value)}
+                      placeholder="영어"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-indigo-400 focus:outline-none"
+                    />
+                    <input
+                      value={w.meaning}
+                      onChange={(e) => updateWord(i, 'meaning', e.target.value)}
+                      placeholder="뜻"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-indigo-400 focus:outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col items-center gap-1 shrink-0">
+                    <span className="text-base" title={w.etymology}>{w.etymology ? '📚' : ''}</span>
+                    <button onClick={() => removeWord(i)} className="p-1 text-gray-300 hover:text-red-500 text-lg">✕</button>
+                  </div>
                 </div>
               ))}
             </div>

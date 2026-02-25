@@ -47,7 +47,7 @@ export function TestQuestion({ question, questionNumber, total, onSubmit }: Test
         <p className="text-sm text-gray-500 mb-3">
           {question.direction === 'en-to-ko' ? '이 단어의 뜻은?' : '이 뜻의 영어 단어는?'}
         </p>
-        <p className="text-4xl font-bold text-gray-800">{prompt}</p>
+        <p className="text-2xl sm:text-4xl font-bold text-gray-800 break-words">{prompt}</p>
         {isSupported && question.direction === 'en-to-ko' && (
           <button
             type="button"
