@@ -42,6 +42,22 @@ export async function enrichWord(
   return res.json();
 }
 
+export async function fetchGrammarContent(
+  topicId: string,
+  topicLabel: string
+): Promise<{ explanation: string; questions: Array<{ sentence_with_blank: string; hint: string; correct_answer: string; grammar_point: string }> }> {
+  const res = await fetch(`${BASE_URL}/grammar/topic`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic_id: topicId, topic_label: topicLabel }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Grammar generation failed' }));
+    throw new Error(err.detail || 'Grammar generation failed');
+  }
+  return res.json();
+}
+
 export async function enrichBatch(
   words: Array<{ word: string; meaning: string }>
 ): Promise<Array<{ word: string; success: boolean; part_of_speech?: string; etymology?: string; example_sentence?: string; example_translation?: string }>> {

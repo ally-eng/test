@@ -5,7 +5,7 @@ import os
 
 load_dotenv()
 
-from routers import health, ocr, enrich
+from routers import health, ocr, enrich, grammar
 
 app = FastAPI(title="Vocab App API", version="1.0.0")
 
@@ -31,6 +31,7 @@ else:
 app.include_router(health.router, prefix="/api")
 app.include_router(ocr.router, prefix="/api")
 app.include_router(enrich.router, prefix="/api")
+app.include_router(grammar.router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn

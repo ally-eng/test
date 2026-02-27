@@ -7,6 +7,7 @@ import { TestPage } from './pages/TestPage';
 import { ResultsPage } from './pages/ResultsPage';
 import { SetupPage } from './pages/SetupPage';
 import { EtymologyPage } from './pages/EtymologyPage';
+import { GrammarPage } from './pages/GrammarPage';
 
 type AppStatus = 'loading' | 'ready' | 'no_api_key' | 'backend_down';
 
@@ -77,6 +78,7 @@ export default function App() {
         <Route path="/test" element={<TestPage />} />
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/etymology" element={<EtymologyPage />} />
+        <Route path="/grammar" element={<GrammarPage />} />
       </Routes>
     </BrowserRouter>
   );

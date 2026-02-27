@@ -140,6 +140,12 @@ export function HomePage() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={() => navigate('/grammar')}
+              className="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-sm font-medium hover:bg-indigo-200"
+            >
+              ✏️ 문법
+            </button>
+            <button
               onClick={() => navigate('/etymology')}
               className="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg text-sm font-medium hover:bg-amber-200"
             >

@@ -48,3 +48,10 @@ export interface WrongWord {
   meaning: string;
   wrongCount: number;
 }
+
+export interface GrammarQuestion {
+  sentenceWithBlank: string;
+  hint: string;
+  correctAnswer: string;
+  grammarPoint: string;
+}
