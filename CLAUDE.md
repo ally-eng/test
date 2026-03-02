@@ -6,9 +6,10 @@ This file provides guidance for AI assistants (including Claude) working in this
 
 - **Repository**: ally-eng/test
 - **Status**: New project — initial setup phase
-- **Primary branch**: `claude/claude-md-ml3e5ioi7myg8n7a-yw6FL`
+- **Primary branch**: `master`
+- **Last reviewed**: 2026-03-02
 
-This repository is currently in its initial state with no application code yet. Update this section as the project takes shape.
+This repository is currently in its initial state with only this guidance file. No application code, tooling, or dependencies have been added yet. Update this section as the project takes shape.
 
 ## Project Structure
 
