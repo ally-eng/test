@@ -5,47 +5,65 @@ This file provides guidance for AI assistants (including Claude) working in this
 ## Repository Overview
 
 - **Repository**: ally-eng/test
-- **Status**: New project — initial setup phase
-- **Primary branch**: `claude/claude-md-ml3e5ioi7myg8n7a-yw6FL`
+- **Status**: Active development — meeting management service
+- **Primary branch**: `claude/meeting-management-service-diaFQ`
 
-This repository is currently in its initial state with no application code yet. Update this section as the project takes shape.
+외부 기업 미팅을 기록·분석하고, 액션아이템·협력 시나리오를 자동 도출하며, Obsidian과 연동되는 고객관리 서비스. Claude API(claude-opus-4-6)로 티로(tiro) 스크립트를 처리합니다.
 
 ## Project Structure
 
 ```
 .
-├── CLAUDE.md          # AI assistant guidance (this file)
-└── .git/              # Git metadata
+├── CLAUDE.md               # AI assistant guidance (this file)
+├── main.py                 # CLI entry point (analyze / list / proposal / export)
+├── analyzer.py             # Claude API: transcript analysis + proposal generation
+├── storage.py              # JSON persistence at ~/.meeting-manager/<company>.json
+├── obsidian.py             # Obsidian vault markdown exporter
+├── models.py               # Dataclasses: MeetingAnalysis, ActionItem, CollaborationScenario
+├── requirements.txt        # Python deps: anthropic
+└── sample_transcript.txt   # Example tiro-format meeting transcript
 ```
-
-Update this tree as files and directories are added.
 
 ## Development Setup
 
-<!-- Update this section once the tech stack is chosen -->
-
 ### Prerequisites
 
-_To be determined — add language runtimes, package managers, and system dependencies here._
+- Python 3.12+
+- `ANTHROPIC_API_KEY` environment variable
 
 ### Installation
 
-_To be determined — add setup commands here (e.g., `npm install`, `pip install -r requirements.txt`)._
+```bash
+pip install -r requirements.txt
+```
 
 ### Running the Project
 
-_To be determined — add the main run/start command here._
+```bash
+# 미팅 스크립트 분석
+python main.py analyze sample_transcript.txt --company "테크노바"
+
+# Obsidian 볼트 연동
+python main.py analyze sample_transcript.txt --company "테크노바" --obsidian ~/MyVault
+
+# 미팅 목록 조회
+python main.py list
+python main.py list --company "테크노바"
+
+# 제안서 생성 (파트너십 / poc / investment / mou)
+python main.py proposal "테크노바" --type partnership --output proposal.md
+
+# Obsidian 전체 내보내기
+python main.py export --vault ~/MyVault
+```
 
 ## Build and Test
 
-<!-- Update with actual commands once tooling is configured -->
-
 | Action | Command |
 |--------|---------|
-| Build  | _TBD_   |
-| Test   | _TBD_   |
-| Lint   | _TBD_   |
-| Format | _TBD_   |
+| Run    | `python main.py <command>` |
+| Lint   | `ruff check .` |
+| Format | `ruff format .` |
 
 ## Code Conventions
 
@@ -74,7 +92,29 @@ _To be determined — document testing conventions, coverage expectations, and t
 
 ## Architecture
 
-_To be determined — document high-level architecture, key modules, data flow, and design decisions here as the project develops._
+```
+tiro 스크립트 파일
+      │
+      ▼
+  analyzer.py  ──── Claude Opus 4.6 (structured JSON output)
+      │                   ↳ 날짜, 참석자, 요약, 액션아이템, 협력 시나리오 추출
+      ▼
+  storage.py   ──── ~/.meeting-manager/<company>.json
+      │
+      ├──▶ obsidian.py ── Obsidian 볼트
+      │        ├── Meetings/<Company>/<date>_<id>.md  (미팅 노트)
+      │        ├── Meetings/<Company>/_Overview.md    (회사 개요)
+      │        └── Meetings/_Index.md                (마스터 인덱스)
+      │
+      └──▶ analyzer.py ── Claude Opus 4.6 (streaming + adaptive thinking)
+               └── 제안서 마크다운 생성
+```
+
+**핵심 설계 결정:**
+- `output_config.format` 구조화 출력으로 트랜스크립트 분석을 단일 API 호출로 처리
+- 제안서는 스트리밍 + `thinking: {type: "adaptive"}`로 고품질 장문 생성
+- 데이터는 기업별 JSON 파일로 저장 (외부 DB 불필요)
+- Obsidian은 파일시스템 기반 연동 (YAML 프론트매터, 위키링크)
 
 ## CI/CD
 
