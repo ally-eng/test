@@ -11,6 +11,14 @@
   python main.py list --company "삼성전자"
   python main.py proposal "삼성전자" --type partnership --output proposal.md
   python main.py export --vault ~/MyVault
+
+팀 공유 (공유 폴더):
+  # 방법 1: 매번 --data-dir 지정
+  python main.py --data-dir "/Users/Shared/Dropbox/meeting-data" analyze ...
+
+  # 방법 2: 환경변수로 한 번만 설정 (권장)
+  export MEETING_MANAGER_DATA_DIR="/Users/Shared/Dropbox/meeting-data"
+  python main.py analyze ...
 """
 
 import argparse
@@ -19,7 +27,7 @@ from pathlib import Path
 
 from analyzer import analyze_transcript, generate_proposal
 from obsidian import export_company_overview, export_master_index, export_meeting_note
-from storage import get_all_meetings, get_company_meetings, list_companies, save_meeting
+from storage import get_all_meetings, get_company_meetings, get_data_dir, list_companies, save_meeting, set_data_dir
 
 
 # ── Sub-command handlers ─────────────────────────────────────────────────────
@@ -140,6 +148,15 @@ def build_parser() -> argparse.ArgumentParser:
         description="외부 기업 미팅 관리 서비스 (Claude AI + Obsidian)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
+    parser.add_argument(
+        "--data-dir",
+        metavar="DIR",
+        help=(
+            "미팅 데이터 저장 경로 "
+            "(기본값: $MEETING_MANAGER_DATA_DIR 또는 ~/.meeting-manager). "
+            "팀 공유 폴더를 지정하면 함께 사용 가능."
+        ),
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     # analyze
@@ -174,6 +191,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+
+    if args.data_dir:
+        set_data_dir(args.data_dir)
+
+    print(f"📂 데이터 경로: {get_data_dir()}")
 
     handlers = {
         "analyze": cmd_analyze,
